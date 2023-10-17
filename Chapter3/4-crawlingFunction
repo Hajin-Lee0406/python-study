@@ -1,0 +1,33 @@
+'''
+파이썬을 이용한 네이버 블로그 크롤링
+'''
+import requests
+from bs4 import BeautifulSoup
+
+def blog_crawling():
+    url = 'https://search.naver.com/search.naver?query=%ED%99%8D%EB%8C%80%20%EB%A7%9B%EC%A7%91&nso=&where=blog&sm=tab_opt'
+    response = requests.get(url, timeout=10)
+    soup = BeautifulSoup(response.text, 'html.parser')
+    data = []
+    
+    for links in soup.select('ul.lst_total > li.bx'):
+        title = links.select_one('a.api_txt_lines.total_tit').get_text(strip=True)
+        author = links.select_one('a.sub_txt.sub_name').get_text(strip=True)
+        date = links.select_one('span.sub_time.sub_txt').get_text(strip=True)
+        
+        # 정보를 딕셔너리로 저장
+        info = {
+            'title': title,
+            'author': author,
+            'date': date
+        }
+        
+        data.append(info)
+        
+    for item in data:
+        print("제목:", item['title'])
+        print("작성자:", item['author'])
+        print("날짜:", item['date'])
+        print()
+
+blog_crawling()
