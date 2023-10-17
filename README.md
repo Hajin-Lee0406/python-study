@@ -13,12 +13,25 @@ https://software-creator.tistory.com/20 </br></br>
 </br></br>
 - 네이버 블로그 크롤링</br>
 
-        soup = BeautifulSoup(response.text, 'html.parser')
         for links in soup.select('ul.lst_total > li.bx'):
-            title = links.select('a.api_txt_lines.total_tit') # 블로그 글 제목 크롤링
-            title = title[0].get_text(strip=True) # select로 찾은 결과는 리스트로 표시되기에 [0]을 썼습니다. 
-            
-            print(title)
+                title = links.select_one('a.api_txt_lines.total_tit').get_text(strip=True)
+                author = links.select_one('a.sub_txt.sub_name').get_text(strip=True)
+                date = links.select_one('span.sub_time.sub_txt').get_text(strip=True)
+                
+                # 정보를 딕셔너리로 저장
+                info = {
+                    'title': title,
+                    'author': author,
+                    'date': date
+                }
+                
+                data.append(info)
+        
+          for item in data:
+                print("제목:", item['title'])
+                print("작성자:", item['author'])
+                print("날짜:", item['date'])
+                print()
 
 
     ![Alt text](image.png)![Alt text](image-2.png)
